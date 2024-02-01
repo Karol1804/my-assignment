@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+
+type post = {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
 
 const useFetch = (url: string) => {
-    type post = {
-        userId: number;
-        id: number;
-        title: string;
-        body: string;
-    }
     const [data, setData] = useState<Array<post>>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
