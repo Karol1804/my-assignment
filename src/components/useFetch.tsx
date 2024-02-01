@@ -8,7 +8,7 @@ const useFetch = (url: string) => {
         body: string;
     }
     const [data, setData] = useState<Array<post>>([])
-    const [loading, setLoading] = useState<boolean>(true)
+    const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const fetchData = async (url: string) => {
