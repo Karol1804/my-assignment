@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-type post = {
+type Post = {
     userId: number;
     id: number;
     title: string;
@@ -8,28 +8,32 @@ type post = {
 }
 
 const useFetch = (url: string) => {
-    const [data, setData] = useState<Array<post>>([])
+    const [data, setData] = useState<Array<Post>>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const fetchData = async (url: string) => {
-        const resp = await fetch(url)
-        const data = await resp.json()
-        if (Object.keys(data).length !== 0) {
-            setLoading(false)
-            setData(data)
-            setError('')
-        }
-        else {
-            setLoading(false)
-            setError(resp.status.toString())
+        try {
+            const resp = await fetch(url);
+
+            if (!resp.ok) {
+                throw new Error(resp.status.toString());
+            }
+
+            const responseData = await resp.json();
+            setLoading(false);
+            setData(responseData);
+            setError('');
+        } catch (error: any) {
+            setLoading(false);
+            setError(error.message);
         }
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         fetchData(url);
     }, [url])
-    return {data: data, loading, error }
+    return { data, loading, error }
 }
 
 export default useFetch
