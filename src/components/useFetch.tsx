@@ -6,14 +6,16 @@ type Post = {
     title: string;
     body: string;
 }
-interface FetchOptions {
-    onSuccess?: (data: Post[]) => void;
-    onError?: (error: string) => void;
+type FetchResult = {
+    data: Array<Post>;
+    loading: boolean;
+    error: string;
+    onSuccess: (data: Array<Post>) => void;
+    onError: (error: string) => void;
+    refetch: () => void;
 }
 
-const useFetch = (url: string, options: FetchOptions = {}) => {
-    const { onSuccess, onError } = options;
-    console.log(options)
+const useFetch = (url: string): FetchResult => {
 
     const [data, setData] = useState<Array<Post>>([])
     const [loading, setLoading] = useState(true)
@@ -31,18 +33,21 @@ const useFetch = (url: string, options: FetchOptions = {}) => {
             setLoading(false);
             setData(responseData);
             setError('');
-            if (onSuccess) {
-                onSuccess(responseData);
-            }
+            onSuccess(responseData);
         } catch (error: any) {
             setData([])
             setLoading(false);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
             setError(errorMessage);
-            if (onError) {
-                onError(errorMessage);
-            }
+            onError(errorMessage);
         }
+    }
+    const onSuccess = (data: Array<Post>) => {
+        console.log('Perform side effect after data fetching', data)
+    }
+
+    const onError = (error: string) => {
+        console.log('Perform side effect after encoutering error', error)
     }
     const refetch = () => {
         setLoading(true);
@@ -53,7 +58,7 @@ const useFetch = (url: string, options: FetchOptions = {}) => {
         fetchData(url);
     }, [url])
 
-    return { data, loading, error, refetch }
+    return { data, loading, error, onSuccess, onError, refetch }
 }
 
 export default useFetch
