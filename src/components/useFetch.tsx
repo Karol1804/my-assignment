@@ -14,8 +14,13 @@ type FetchResult = {
     onError: (error: string) => void;
     refetch: () => void;
 }
+type Props = {
+    url: string;
+    onSuccess: (data: Array<Post>) => void;
+    onError: (error: string) => void;
+};
 
-const useFetch = (url: string): FetchResult => {
+const useFetch = ({ url, onSuccess, onError }: Props): FetchResult => {
 
     const [data, setData] = useState<Array<Post>>([])
     const [loading, setLoading] = useState(true)
@@ -42,13 +47,7 @@ const useFetch = (url: string): FetchResult => {
             onError(errorMessage);
         }
     }
-    const onSuccess = (data: Array<Post>) => {
-        console.log('Perform side effect after data fetching', data)
-    }
 
-    const onError = (error: string) => {
-        console.log('Perform side effect after encoutering error', error)
-    }
     const refetch = () => {
         setLoading(true);
         fetchData(url);
